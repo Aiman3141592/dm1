@@ -62,7 +62,7 @@ def scndsource(i,kkfile,filename):
    numbers = []
    for line in content:
 	   for word in line.split():
-  	       if word.lstrip("-").replace('.', '', 1).replace('E-', '', 1).replace('E', '', 1).isdigit():
+  	       if word.lstrip("-").replace('.', '', 1).replace('E-', '', 1).replace('E+', '', 1).replace('E', '', 1).isdigit():
       	          numbers.append(float(word))
 
    m_kk = numbers[2] # in GeV
@@ -96,11 +96,11 @@ def scndsource(i,kkfile,filename):
    	nb3=np.where(svline1 == 'sigma*v:a1a1_mummup')
    	nb4=str(nb3[0])
 	nb5=int(re.search(r'\d+', nb4).group())
-	j1=nb5+3
+	j1=nb5+4
    	sigmav=numbers[j1]
    elif branch == 'all':
-        j=i-1
-        sigmav=scrun[j]	
+        j2=i-1
+        sigmav=scrun[j2]	
         
    BR    =1.0	                #since its 100% so its equal to 1.0.
    Nx    =qfunctions.nfw_numdens_kk(r,m_kk,rhos,rs)	        #Neutralino number density (cm^-3)
@@ -125,9 +125,8 @@ counter = 0
 for line in open(fname):
     li=line.strip()
     if not li.startswith("#"):
+        if li:
     	   counter += 1
-    
-counter = counter - 3
 
 n_outputfiles = counter  #number of output file
 for i in range (1,n_outputfiles+1,1):
