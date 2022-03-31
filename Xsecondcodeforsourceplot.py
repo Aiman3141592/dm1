@@ -19,28 +19,6 @@ import warnings
 import qproperties
 import qfunctions
 import qconstants
-import quser_define
-import re
-
-############## creating empty folder for the analysed data#######
-
-import os
-c_name		= quser_define.cluster_name
-branch		= quser_define.an_b
-newpath = r'outdata_%s'%c_name+'_%s'%branch	
-print newpath
-if not os.path.exists(newpath):
-    os.makedirs(newpath)
-    
-    
-fname='scan_run_01.txt'  	
-svline = np.genfromtxt(fname, delimiter=" ", 	dtype='str',comments=None ,deletechars='#:',usecols=(3,),unpack=False, invalid_raise=False)
-k1=np.where(svline=='tot_Xsec')
-k2=str(k1[0])
-k3=int(re.search(r'\d+', k2).group())
-scrun = np.loadtxt(fname, comments="#", delimiter="	", usecols=(k3,), unpack=False)
-
- 
  
 def scndsource(i,kkfile,filename):
    warnings.simplefilter('always',Warning)
@@ -62,7 +40,7 @@ def scndsource(i,kkfile,filename):
    numbers = []
    for line in content:
 	   for word in line.split():
-  	       if word.lstrip("-").replace('.', '', 1).replace('E-', '', 1).replace('E+', '', 1).replace('E', '', 1).isdigit():
+  	       if word.lstrip("-").replace('.', '', 1).replace('E-', '', 1).replace('E', '', 1).isdigit():
       	          numbers.append(float(word))
 
    m_kk = numbers[2] # in GeV
@@ -73,9 +51,8 @@ def scndsource(i,kkfile,filename):
 
    x =np.loadtxt(kkfile)[:,0]
    y =np.loadtxt(kkfile)[:,1]		#unit: # annihilation^-1 Gev^-1
+   dNdE=(10**y)*m_kk
    Gev=(10**x)*m_kk
-   dNdE=y/((10**x)*(np.log(10)))
-   
 
    rhos	=qproperties.rho_s
    rs	=qproperties.r_s
@@ -83,25 +60,7 @@ def scndsource(i,kkfile,filename):
 
 #Q_source = sigmav * dN/dE * BR * (Nx**2) / 2.0'
 #Please give your sigmav and Nx:'
-#unit: cm^3 s^-1   
-   svline1 = np.genfromtxt(filename, dtype='str',  delimiter=" ",usecols=(0,),comments=None, unpack=False, invalid_raise=False)
-   
-   if branch == 'bbx':
-   	nb=np.where(svline1 == 'sigma*v:a1a1_bbx')
-	nb1=str(nb[0])
-	nb2=int(re.search(r'\d+', nb1).group())
-	j=nb2+4
-   	sigmav=numbers[j]
-   elif branch == 'mummup':
-   	nb3=np.where(svline1 == 'sigma*v:a1a1_mummup')
-   	nb4=str(nb3[0])
-	nb5=int(re.search(r'\d+', nb4).group())
-	j1=nb5+4
-   	sigmav=numbers[j1]
-   elif branch == 'all':
-        j2=i-1
-        sigmav=scrun[j2]	
-        
+   sigmav=numbers[31]	#unit: cm^3 s^-1   for number[i], mummup=32 or bbx=30 
    BR    =1.0	                #since its 100% so its equal to 1.0.
    Nx    =qfunctions.nfw_numdens_kk(r,m_kk,rhos,rs)	        #Neutralino number density (cm^-3)
 
@@ -119,20 +78,11 @@ def scndsource(i,kkfile,filename):
 
 #### iterating through all output#####
 
-#count how many run#
-file = open(fname,"r")
-counter = 0
-for line in open(fname):
-    li=line.strip()
-    if not li.startswith("#"):
-        if li:
-    	   counter += 1
-
-n_outputfiles = counter  #number of output file
+n_outputfiles= 44 #number of output file
 for i in range (1,n_outputfiles+1,1):
      if i<10:
          outfile_0	=".source_run_01_0%s"%i
-         outfile_1	="%s"%newpath+"/cluster_%s"%qproperties.cluster 
+         outfile_1	="cluster_%s"%qproperties.cluster 
          outfile	=outfile_1+outfile_0
          kkfile		="run_01_0%s/positrons_spectrum_PPPC4DMID_ew.dat"%i
          filename	="run_01_0%s/maddm.out"%i
@@ -142,7 +92,7 @@ for i in range (1,n_outputfiles+1,1):
          print "\nSource spectrum written to file '%s'."%outfile
      else:
          outfile_0	=".source_run_01_%s"%i
-         outfile_1	="%s"%newpath+"/cluster_%s"%qproperties.cluster 
+         outfile_1	="cluster_%s"%qproperties.cluster 
          outfile	=outfile_1+outfile_0
          kkfile		="run_01_%s/positrons_spectrum_PPPC4DMID_ew.dat"%i
          filename	="run_01_%s/maddm.out"%i

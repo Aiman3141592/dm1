@@ -6,7 +6,7 @@ import pandas as pd
 import halodp
 import quser_define
 
-############################## Choose a Cluster from list below ###############################################
+############################## Choose a Cluster ###############################################
 
 cluster=quser_define.cluster_name
 
@@ -17,13 +17,10 @@ cluster=quser_define.cluster_name
 d1=pd.DataFrame.from_dict({
 #'nan'  : ['A2142','MH',0.0909,418600,23,129,0.57,0.810,5.82,10.0,0.5,6189.32, 510,2000],
 
-'A4038'  : ['A4038','MH',0.02819, 100000, 86,43, 3.11,0.541,0.0174, 7.95E-6,0.75,98.38]
-#'A1758S'  : ['A1758S','MH', 0.279, 1428,3.1},
-'A1758'  : ['A1758S','MH', 0.279, 876100,3.9,357.4881512390829, 10.40,0.7,0.37E-2,1.0,438.9050},
-
-
-
-orient='index',columns=['Label','type','redshift', 'DL','S_nu','r_c_dum','T_gas_dum','beta','n0','B_dum','eta','r'])
+'A4038'  : ['A4038','MH',0.02819, 131000, 86,43, 3.11,0.541,0.0174, 7.95E-6,0.5,98.38],
+'A1758'  : ['A1758','MH', 0.279, 1428000,16.8,357.4881512390829, 10.40,0.7,0.37E-2,10E-6,0.5,438.9050] #cool core
+},
+orient='index',columns=['Label','type', 'redshift', 'DL','S_nu','r_c_dum','T_gas_dum', 'beta','n0','B_dum','eta','r'])
 ############################# Set and decide the constants start ##################################################
 
 #Hubble constants
@@ -85,7 +82,7 @@ Ibarra=0.9e-25
 
 rho_s= rho_crit*rhos
 
-#characteristic radius in unit of meter
+#characteristic radius in unit of meter from unit kpc
 r_s= kpc*rs
 #r_s= kpc*d1.loc[cluster,'r_s']
 r=kpc*d1.loc[cluster,'r']

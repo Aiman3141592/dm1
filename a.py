@@ -21,6 +21,7 @@ import qfunctions
 import qconstants
 import quser_define
 import re
+import matplotlib.pyplot as mpl
 
 ############## creating empty folder for the analysed data#######
 
@@ -115,7 +116,9 @@ def scndsource(i,kkfile,filename):
    latesttable=np.concatenate((dummytable,latesttable),axis=0)
 
    np.savetxt(outfile,latesttable,'%25.15e', header=line1)
-
+   mpl.plot(m_kk,sigmav,'.')
+   mpl.yscale('log')
+   mpl.xscale('log')
 
 #### iterating through all output#####
 
@@ -149,5 +152,11 @@ for i in range (1,n_outputfiles+1,1):
          
          scndsource(i,kkfile,filename)
          
-         print "\nSource spectrum written to file '%s'."%outfile    
-         
+         print "\nSource spectrum written to file '%s'."%outfile
+          
+mpl.xlabel('mass dm - GeV')
+mpl.ylabel('sigmav - cm^3/s')            
+mpl.show()
+imgname='%s/img.png'%newpath
+mpl.savefig(imgname, dpi='figure', format='png')         
+
